@@ -20,9 +20,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Application\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storages", "Application\Services\Storages\Storages.csproj", "{221894E6-2840-45D1-B4B9-337F7FC5578B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Db", "Models.Db\Models.Db.csproj", "{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Db", "Application\Models.Db\Models.Db.csproj", "{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Db", "Services.Db\Services.Db.csproj", "{D47D4A37-983E-4A66-93DE-802160A991F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Db", "Application\Services.Db\Services.Db.csproj", "{D47D4A37-983E-4A66-93DE-802160A991F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
