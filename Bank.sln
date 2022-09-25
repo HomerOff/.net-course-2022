@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Application\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storages", "Application\Services\Storages\Storages.csproj", "{221894E6-2840-45D1-B4B9-337F7FC5578B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Db", "Models.Db\Models.Db.csproj", "{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Db", "Services.Db\Services.Db.csproj", "{D47D4A37-983E-4A66-93DE-802160A991F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,14 @@ Global
 		{221894E6-2840-45D1-B4B9-337F7FC5578B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{221894E6-2840-45D1-B4B9-337F7FC5578B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{221894E6-2840-45D1-B4B9-337F7FC5578B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8485EAEF-B9A9-43AE-8D58-545ED8B487F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D47D4A37-983E-4A66-93DE-802160A991F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D47D4A37-983E-4A66-93DE-802160A991F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D47D4A37-983E-4A66-93DE-802160A991F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D47D4A37-983E-4A66-93DE-802160A991F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{69DFF21E-6755-4785-8160-0E3DE504D3D3} = {5789F047-CC75-419E-A040-A231A9ACC5F4}
