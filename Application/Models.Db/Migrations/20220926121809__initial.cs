@@ -64,70 +64,48 @@ namespace Models.Db.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     amount = table.Column<float>(type: "real", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uuid", nullable: false)
+                    client_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    currency_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_accounts_clients_ClientId",
-                        column: x => x.ClientId,
+                        name: "FK_accounts_clients_client_id",
+                        column: x => x.client_id,
                         principalTable: "clients",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccountCurrency",
-                columns: table => new
-                {
-                    AccountsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CurrenciesId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountCurrency", x => new { x.AccountsId, x.CurrenciesId });
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_AccountCurrency_accounts_AccountsId",
-                        column: x => x.AccountsId,
-                        principalTable: "accounts",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AccountCurrency_currencies_CurrenciesId",
-                        column: x => x.CurrenciesId,
+                        name: "FK_accounts_currencies_currency_id",
+                        column: x => x.currency_id,
                         principalTable: "currencies",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountCurrency_CurrenciesId",
-                table: "AccountCurrency",
-                column: "CurrenciesId");
+                name: "IX_accounts_client_id",
+                table: "accounts",
+                column: "client_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_accounts_ClientId",
+                name: "IX_accounts_currency_id",
                 table: "accounts",
-                column: "ClientId");
+                column: "currency_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountCurrency");
+                name: "accounts");
 
             migrationBuilder.DropTable(
                 name: "employees");
 
             migrationBuilder.DropTable(
-                name: "accounts");
+                name: "clients");
 
             migrationBuilder.DropTable(
                 name: "currencies");
-
-            migrationBuilder.DropTable(
-                name: "clients");
         }
     }
 }

@@ -22,22 +22,7 @@ namespace Models.Db.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AccountCurrency", b =>
-                {
-                    b.Property<Guid>("AccountsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CurrenciesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("AccountsId", "CurrenciesId");
-
-                    b.HasIndex("CurrenciesId");
-
-                    b.ToTable("AccountCurrency");
-                });
-
-            modelBuilder.Entity("Models.Db.Account", b =>
+            modelBuilder.Entity("Models.Db.AccountDb", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,17 +33,22 @@ namespace Models.Db.Migrations
                         .HasColumnType("real")
                         .HasColumnName("amount");
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid?>("client_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("currency_id")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("client_id");
+
+                    b.HasIndex("currency_id");
 
                     b.ToTable("accounts");
                 });
 
-            modelBuilder.Entity("Models.Db.Client", b =>
+            modelBuilder.Entity("Models.Db.ClientDb", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +84,7 @@ namespace Models.Db.Migrations
                     b.ToTable("clients");
                 });
 
-            modelBuilder.Entity("Models.Db.Currency", b =>
+            modelBuilder.Entity("Models.Db.CurrencyDb", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,7 +104,7 @@ namespace Models.Db.Migrations
                     b.ToTable("currencies");
                 });
 
-            modelBuilder.Entity("Models.Db.Employee", b =>
+            modelBuilder.Entity("Models.Db.EmployeeDb", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,30 +148,29 @@ namespace Models.Db.Migrations
                     b.ToTable("employees");
                 });
 
-            modelBuilder.Entity("AccountCurrency", b =>
+            modelBuilder.Entity("Models.Db.AccountDb", b =>
                 {
-                    b.HasOne("Models.Db.Account", null)
-                        .WithMany()
-                        .HasForeignKey("AccountsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Models.Db.ClientDb", "Client")
+                        .WithMany("Accounts")
+                        .HasForeignKey("client_id");
 
-                    b.HasOne("Models.Db.Currency", null)
-                        .WithMany()
-                        .HasForeignKey("CurrenciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Models.Db.Account", b =>
-                {
-                    b.HasOne("Models.Db.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Models.Db.CurrencyDb", "Currency")
+                        .WithMany("Accounts")
+                        .HasForeignKey("currency_id");
 
                     b.Navigation("Client");
+
+                    b.Navigation("Currency");
+                });
+
+            modelBuilder.Entity("Models.Db.ClientDb", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("Models.Db.CurrencyDb", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Models.Db;
 
 [Table("currencies")]
-public class Currency
+public class CurrencyDb
 {
     [Column("id")]
     public Guid Id { get; set; }
@@ -14,5 +14,5 @@ public class Currency
     [Column("name")]
     public string Name { get; set; }
 
-    public ICollection<Account> Accounts { get; set; }
+    public ICollection<AccountDb> Accounts { get; set; }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Models.Db;
 
 namespace Services.Db;
@@ -11,27 +12,26 @@ public class ClientService
         _dbContext = new ApplicationContext();
     }
 
-    public Guid AddClient(Client client)
+    public void AddClient(ClientDb client)
     {
-        var defaultAccount = new Account
+        _dbContext.Clients.Add(client);
+        _dbContext.SaveChanges();
+        
+        var defaultAccount = new AccountDb
         {
             Id = Guid.NewGuid(),
             Amount = 0,
-            ClientId = client.Id
+            Client = client
         };
-        
-        _dbContext.Clients.Add(client);
         _dbContext.Accounts.Add(defaultAccount);
         
         _dbContext.SaveChanges();
-
-        return defaultAccount.Id;
     }
     
-    public void UpdateClient(Client client, Guid clientId)
+    public void UpdateClient(ClientDb client, Guid clientId)
     {
-        var oldDataClient = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
-        oldDataClient = new Client
+        var oldDataClient = GetClient(clientId);
+        oldDataClient = new ClientDb
         {
             FirstName = client.FirstName,
             LastName = client.LastName,
@@ -46,17 +46,23 @@ public class ClientService
 
     public void DelClient(Guid clientId)
     {
-        var client = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
-        _dbContext.Clients.Remove(client);
+        foreach (var account in GetAccounts(clientId))
+        {
+            _dbContext.Accounts.Remove(account);
+        }
+        _dbContext.SaveChanges();
+        
+        _dbContext.Clients.Remove(GetClient(clientId));
+        
         _dbContext.SaveChanges();
     }
     
-    public Client? GetClient(Guid clientId)
+    public ClientDb GetClient(Guid clientId)
     {
         return _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
     }
     
-    public List<Client> GetClients(ClientFilter clientFilter)
+    public List<ClientDb> GetClients(ClientFilter clientFilter)
     {
         if (clientFilter.DateEnd == DateTime.MinValue)
         {
@@ -85,25 +91,29 @@ public class ClientService
         return selection.ToList();
     }
     
-    public Guid AddAccount(Guid clientId)
+    public void AddAccount(Guid clientId)
     {
-        var newAccount = new Account
+        var newAccount = new AccountDb
         {
             Id = Guid.NewGuid(),
             Amount = 0,
-            ClientId = clientId
+            Client = GetClient(clientId)
         };
         _dbContext.Accounts.Add(newAccount);
         
         _dbContext.SaveChanges();
-        
-        return newAccount.Id;
     }
     
     public void DelAccount(Guid accountId)
     {
         var account = _dbContext.Accounts.FirstOrDefault(c => c.Id == accountId);
         _dbContext.Accounts.Remove(account);
+        
         _dbContext.SaveChanges();
+    }
+    
+    public List<AccountDb> GetAccounts(Guid clientId)
+    {
+        return GetClient(clientId).Accounts.ToList();
     }
 }

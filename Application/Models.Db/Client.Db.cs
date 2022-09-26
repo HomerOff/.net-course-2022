@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Models.Db;
 
 [Table("clients")]
-public class Client
+public class ClientDb
 {
     [Column("id")]
     public Guid Id { get; set; }
@@ -25,4 +25,6 @@ public class Client
     
     [Column("bonus")]
     public int Bonus { get; set; }
+    
+    public ICollection<AccountDb> Accounts { get; set; }
 }

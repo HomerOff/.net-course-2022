@@ -4,10 +4,10 @@ namespace Models.Db
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<ClientDb> Clients { get; set; }
+        public DbSet<EmployeeDb> Employees { get; set; }
+        public DbSet<AccountDb> Accounts { get; set; }
+        public DbSet<CurrencyDb> Currencies { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder
             optionsBuilder)

@@ -14,7 +14,7 @@ namespace ServiceTests
             // Arrange
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
-            var clientList = dataGenerators.GetClientList(10);
+            var clientList = dataGenerators.GetClientList(1);
             var firstClient = clientList.First();
 
             // Assert
@@ -98,15 +98,17 @@ namespace ServiceTests
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
-            var accountsGuid = new List<Guid>();
-            
+            var firstClient = clientList.First();
+
             // Assert
             foreach (var client in clientList)
             {
-                accountsGuid.Add(clientService.AddClient(client));
+                clientService.AddClient(client);
             }
             
-            clientService.DelAccount(accountsGuid.First());
+            var accountsGuid = clientService.GetAccounts(firstClient.Id);
+            
+            clientService.DelAccount(accountsGuid.First().Id);
             
             // Act
             Assert.True(true);
