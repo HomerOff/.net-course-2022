@@ -83,7 +83,7 @@ namespace ServiceTests
 
             var employeeFilter = new EmployeeFilter
             {
-                DateStart = DateTime.Now.AddYears(-60)
+                FirstName = "Ivan"
             };
 
             // Act
@@ -98,10 +98,10 @@ namespace ServiceTests
                 }
             }
 
-            var employeesWithNameIvan = employeeService.GetEmployees(employeeFilter);
+            var employeesWithNameIvan = employeeService.GetEmployees(employeeFilter, 1, 10);
 
             // Assert
-            if (employeesWithNameIvan.Count > 0) Assert.True(true);
+            if (employeesWithNameIvan[0].FirstName == "Ivan") Assert.True(true);
             else Assert.True(false);
         }
 

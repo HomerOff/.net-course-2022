@@ -14,7 +14,7 @@ namespace ServiceTests
             // Arrange
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
-            var clientList = dataGenerators.GetClientList(1);
+            var clientList = dataGenerators.GetClientList(10);
             var firstClient = clientList.First();
 
             // Assert
@@ -126,7 +126,7 @@ namespace ServiceTests
 
             var clientFilter = new ClientFilter
             {
-                DateStart = DateTime.Now.AddYears(-60)
+                FirstName = "Ivan"
             };
 
             // Act
@@ -141,10 +141,10 @@ namespace ServiceTests
                 }
             }
 
-            var clientsWithNameIvan = clientService.GetClients(clientFilter);
+            var clientsWithNameIvan = clientService.GetClients(clientFilter, 1, 10);
 
             // Assert
-            if (clientsWithNameIvan.Count > 0) Assert.True(true);
+            if (clientsWithNameIvan[0].FirstName == "Ivan") Assert.True(true);
             else Assert.True(false);
         }
     }

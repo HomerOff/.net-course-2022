@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Models.Db;
 
 namespace Services.Db;
@@ -19,7 +20,7 @@ public class EmployeeService
 
     public void UpdateEmployee(EmployeeDb employee, Guid employeeId)
     {
-        var oldDataEmployee = GetEmployee(employeeId);
+        var oldDataEmployee = _dbContext.Employees.FirstOrDefault(c => c.Id == employeeId);
         oldDataEmployee = new EmployeeDb
         {
             FirstName = employee.FirstName,
@@ -35,7 +36,8 @@ public class EmployeeService
 
     public void DelEmployee(Guid employeeId)
     {
-        _dbContext.Employees.Remove(GetEmployee(employeeId));
+        var employee = _dbContext.Employees.FirstOrDefault(c => c.Id == employeeId);
+        _dbContext.Employees.Remove(employee);
         _dbContext.SaveChanges();
     }
         
@@ -44,7 +46,7 @@ public class EmployeeService
         return _dbContext.Employees.FirstOrDefault(c => c.Id == employeeId);
     }
     
-    public List<EmployeeDb> GetEmployees(EmployeeFilter employeeFilter)
+    public List<EmployeeDb> GetEmployees(EmployeeFilter employeeFilter, int page, int limit)
     {
         if (employeeFilter.DateEnd == DateTime.MinValue)
         {
@@ -53,26 +55,33 @@ public class EmployeeService
         
         var selection = _dbContext.Employees.
             Where(c => c.BirthdayDate >= employeeFilter.DateStart.ToUniversalTime()).
-            Where(c => c.BirthdayDate <= employeeFilter.DateEnd.ToUniversalTime());
+            Where(c => c.BirthdayDate <= employeeFilter.DateEnd.ToUniversalTime())
+            .AsNoTracking();
 
         if (!string.IsNullOrEmpty(employeeFilter.FirstName))
-            selection = selection.Where(c => c.FirstName == employeeFilter.FirstName);
+            selection = selection.Where(c => c.FirstName == employeeFilter.FirstName)
+                .AsNoTracking();
         
         if (!string.IsNullOrEmpty(employeeFilter.LastName))
-            selection = selection.Where(c => c.LastName == employeeFilter.LastName);
+            selection = selection.Where(c => c.LastName == employeeFilter.LastName)
+                .AsNoTracking();
 
         if (employeeFilter.Passport != 0)
-            selection = selection.Where(c => c.Passport == employeeFilter.Passport);
+            selection = selection.Where(c => c.Passport == employeeFilter.Passport)
+                .AsNoTracking();
         
         if (employeeFilter.PhoneNumber != 0)
-            selection = selection.Where(c => c.PhoneNumber == employeeFilter.PhoneNumber);
+            selection = selection.Where(c => c.PhoneNumber == employeeFilter.PhoneNumber)
+                .AsNoTracking();
         
         if (employeeFilter.Salary != 0)
-            selection = selection.Where(c => c.PhoneNumber == employeeFilter.PhoneNumber);
+            selection = selection.Where(c => c.PhoneNumber == employeeFilter.PhoneNumber)
+                .AsNoTracking();
 
         if (employeeFilter.Bonus != 0)
-            selection = selection.Where(c => c.Bonus == employeeFilter.Bonus);
+            selection = selection.Where(c => c.Bonus == employeeFilter.Bonus)
+                .AsNoTracking();
 
-        return selection.ToList();
+        return selection.Skip((page - 1) * limit).Take(limit).ToList();
     }
 }
