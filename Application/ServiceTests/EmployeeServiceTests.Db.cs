@@ -2,7 +2,7 @@
 using Services;
 using Xunit;
 using EmployeeService = Services.Db.EmployeeService;
-using TestDataGenerator = Services.Db.TestDataGenerator;
+using TestDataGenerator = Services.TestDataGenerator;
 
 
 namespace ServiceTests
@@ -16,16 +16,16 @@ namespace ServiceTests
             var employeeService = new EmployeeService();
             var dataGenerators = new TestDataGenerator();
             var employeeList = dataGenerators.GetEmployeeList(10);
-            var firstEmployee = employeeList.First();
+            var employeesGuid = new List<Guid>();
 
             // Assert
             foreach (var employee in employeeList)
             {
-                employeeService.AddEmployee(employee);
+                employeesGuid.Add(employeeService.AddEmployee(employee));
             }
 
             // Act
-            Assert.NotNull(employeeService.GetEmployee(firstEmployee.Id));
+            Assert.NotNull(employeeService.GetEmployee(employeesGuid[0]));
         }
 
         [Fact]
@@ -36,15 +36,16 @@ namespace ServiceTests
             var dataGenerators = new TestDataGenerator();
             var employeeList = dataGenerators.GetEmployeeList(10);
             var firstEmployee = employeeList.First();
+            var employeesGuid = new List<Guid>();
 
             // Assert
             foreach (var employee in employeeList)
             {
-                employeeService.AddEmployee(employee);
+                employeesGuid.Add(employeeService.AddEmployee(employee));
             }
 
             firstEmployee.FirstName = "Ivan";
-            employeeService.UpdateEmployee(firstEmployee, firstEmployee.Id);
+            employeeService.UpdateEmployee(firstEmployee, employeesGuid[0]);
 
             // Act
             Assert.True(true);
@@ -57,15 +58,15 @@ namespace ServiceTests
             var employeeService = new EmployeeService();
             var dataGenerators = new TestDataGenerator();
             var employeeList = dataGenerators.GetEmployeeList(10);
-            var firstEmployee = employeeList.First();
+            var employeesGuid = new List<Guid>();
 
             // Assert
             foreach (var employee in employeeList)
             {
-                employeeService.AddEmployee(employee);
+                employeesGuid.Add(employeeService.AddEmployee(employee));
             }
 
-            employeeService.DelEmployee(firstEmployee.Id);
+            employeeService.DeleteEmployee(employeesGuid[0]);
 
             // Act
             Assert.True(true);
@@ -78,9 +79,9 @@ namespace ServiceTests
             var employeeService = new EmployeeService();
             var dataGenerators = new TestDataGenerator();
             var employeeList = dataGenerators.GetEmployeeList(10);
-
+            
             employeeList[0].FirstName = "Ivan";
-
+            
             var employeeFilter = new EmployeeFilter
             {
                 FirstName = "Ivan"

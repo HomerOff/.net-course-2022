@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Db;
@@ -5,7 +6,8 @@ namespace Models.Db;
 [Table("clients")]
 public class ClientDb
 {
-    [Column("id")]
+    [Key]
+    [Column("client_id")]
     public Guid Id { get; set; }
     
     [Column("first_name")]

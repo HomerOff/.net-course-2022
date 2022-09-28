@@ -1,34 +1,62 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Db;
+using Models;
 
 namespace Services.Db;
 
 public class ClientService
 {
    private readonly ApplicationContext _dbContext;
-
+   private readonly Guid usdCurrencyGuid;
+    
     public ClientService()
     {
         _dbContext = new ApplicationContext();
+        usdCurrencyGuid = Guid.Parse("e0ac3c2a-e395-4170-b2fe-441994419238");
     }
 
-    public void AddClient(ClientDb client)
+    public Guid AddClient(Client client)
     {
-        _dbContext.Clients.Add(client);
-        _dbContext.SaveChanges();
+        var usdCurrency = new CurrencyDb
+        {
+            Id = usdCurrencyGuid,
+            Code = 840,
+            Name = "USD"
+        };
         
+        if (!_dbContext.Currencies.Contains(usdCurrency))
+        {
+            _dbContext.Currencies.Add(usdCurrency);
+            _dbContext.SaveChanges();
+        }
+       
+        var clientDb = new ClientDb
+        {
+            Id = Guid.NewGuid(),
+            FirstName = client.FirstName,
+            LastName = client.LastName,
+            BirthdayDate = client.BirthdayDate,
+            Bonus = client.Bonus,
+            Passport = client.Passport,
+            PhoneNumber = client.PhoneNumber
+        };
+        _dbContext.Clients.Add(clientDb);
+        _dbContext.SaveChanges();
+
         var defaultAccount = new AccountDb
         {
             Id = Guid.NewGuid(),
             Amount = 0,
-            Client = client
+            Client = clientDb,
+            Currency = _dbContext.Currencies.FirstOrDefault(c => c.Id == usdCurrencyGuid),
         };
         _dbContext.Accounts.Add(defaultAccount);
-        
         _dbContext.SaveChanges();
+        
+        return clientDb.Id; 
     }
     
-    public void UpdateClient(ClientDb client, Guid clientId)
+    public void UpdateClient(Client client, Guid clientId)
     {
         var oldDataClient = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
         oldDataClient = new ClientDb
@@ -44,9 +72,10 @@ public class ClientService
         _dbContext.SaveChanges();
     }
 
-    public void DelClient(Guid clientId)
+    public void DeleteClient(Guid clientId)
     {
-        foreach (var account in GetAccounts(clientId))
+        var clientDb = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
+        foreach (var account in clientDb.Accounts)
         {
             _dbContext.Accounts.Remove(account);
         }
@@ -58,12 +87,23 @@ public class ClientService
         _dbContext.SaveChanges();
     }
     
-    public ClientDb GetClient(Guid clientId)
+    public Client GetClient(Guid clientId)
     {
-        return _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
+        var clientDb = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
+        var client = new Client
+        {
+            FirstName = clientDb.FirstName,
+            LastName = clientDb.LastName,
+            Passport = clientDb.Passport,
+            BirthdayDate = clientDb.BirthdayDate,
+            PhoneNumber = clientDb.PhoneNumber,
+            Bonus = clientDb.Bonus
+        };
+        
+        return client;
     }
     
-    public List<ClientDb> GetClients(ClientFilter clientFilter, int page, int limit)
+    public List<Client> GetClients(ClientFilter clientFilter, int page, int limit)
     {
         if (clientFilter.DateEnd == DateTime.MinValue)
         {
@@ -94,25 +134,44 @@ public class ClientService
         if (clientFilter.Bonus != 0)
             selection = selection.Where(c => c.Bonus == clientFilter.Bonus)
                 .AsNoTracking();
-
-        return selection.Skip((page - 1) * limit).Take(limit).ToList();
+        
+        var clientsDb = selection.Skip((page - 1) * limit).Take(limit).ToList();
+        var clients = new List<Client>();
+        
+        for (int i = 0; i < clientsDb.Count; i++)
+        {
+            var client = new Client
+            {
+                FirstName = clientsDb[i].FirstName,
+                LastName = clientsDb[i].LastName,
+                Passport = clientsDb[i].Passport,
+                BirthdayDate = clientsDb[i].BirthdayDate,
+                PhoneNumber = clientsDb[i].PhoneNumber,
+                Bonus = clientsDb[i].Bonus
+            };
+            clients.Add(client);
+        }
+        
+        return clients;
     }
     
     public void AddAccount(Guid clientId)
     {
+        var usdCurrencyGuid = Guid.Parse("e0ac3c2a-e395-4170-b2fe-441994419238");
         var client = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId);
         var newAccount = new AccountDb
         {
             Id = Guid.NewGuid(),
             Amount = 0,
-            Client = client
+            Client = client,
+            Currency = _dbContext.Currencies.FirstOrDefault(c => c.Id == usdCurrencyGuid),
         };
         _dbContext.Accounts.Add(newAccount);
         
         _dbContext.SaveChanges();
     }
     
-    public void DelAccount(Guid accountId)
+    public void DeleteAccount(Guid accountId)
     {
         var account = _dbContext.Accounts.FirstOrDefault(c => c.Id == accountId);
         _dbContext.Accounts.Remove(account);
@@ -120,8 +179,15 @@ public class ClientService
         _dbContext.SaveChanges();
     }
     
-    public List<AccountDb> GetAccounts(Guid clientId)
+    public List<Guid> GetAccounts(Guid clientId)
     {
-        return _dbContext.Clients.FirstOrDefault(c => c.Id == clientId).Accounts.ToList();
+        var accountsDb = _dbContext.Clients.FirstOrDefault(c => c.Id == clientId).Accounts.ToList();
+        var accounts = new List<Guid>();
+
+        foreach (var account in accountsDb)
+        {
+            accounts.Add(account.Id);
+        }
+        return accounts;
     }
 }

@@ -2,7 +2,7 @@
 using Services;
 using Xunit;
 using ClientService = Services.Db.ClientService;
-using TestDataGenerator = Services.Db.TestDataGenerator;
+using TestDataGenerator = Services.TestDataGenerator;
 
 namespace ServiceTests
 {
@@ -15,16 +15,16 @@ namespace ServiceTests
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
-            var firstClient = clientList.First();
-
+            var clientsGuid = new List<Guid>();
+            
             // Assert
             foreach (var client in clientList)
             {
-                clientService.AddClient(client);
+                clientsGuid.Add(clientService.AddClient(client));
             }
 
             // Act
-            Assert.NotNull(clientService.GetClient(firstClient.Id));
+            Assert.NotNull(clientService.GetClient(clientsGuid[0]));
         }
         
         [Fact]
@@ -34,15 +34,15 @@ namespace ServiceTests
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
-            var firstClient = clientList.First();
+            var clientsGuid = new List<Guid>();
 
             // Assert
             foreach (var client in clientList)
             {
-                clientService.AddClient(client);
+                clientsGuid.Add(clientService.AddClient(client));
             }
 
-            clientService.AddAccount(firstClient.Id);
+            clientService.AddAccount(clientsGuid[0]);
             
             // Act
             Assert.True(true);
@@ -56,15 +56,16 @@ namespace ServiceTests
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
             var firstClient = clientList.First();
+            var clientsGuid = new List<Guid>();
 
             // Assert
             foreach (var client in clientList)
             {
-                clientService.AddClient(client);
+                clientsGuid.Add(clientService.AddClient(client));
             }
 
             firstClient.FirstName = "Ivan";
-            clientService.UpdateClient(firstClient, firstClient.Id);
+            clientService.UpdateClient(firstClient, clientsGuid[0]);
             
             // Act
             Assert.True(true);
@@ -77,15 +78,15 @@ namespace ServiceTests
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
-            var firstClient = clientList.First();
+            var clientsGuid = new List<Guid>();
 
             // Assert
             foreach (var client in clientList)
             {
-                clientService.AddClient(client);
+                clientsGuid.Add(clientService.AddClient(client));
             }
             
-            clientService.DelClient(firstClient.Id);
+            clientService.DeleteClient(clientsGuid[0]);
             
             // Act
             Assert.True(true);
@@ -98,17 +99,17 @@ namespace ServiceTests
             var clientService = new ClientService();
             var dataGenerators = new TestDataGenerator();
             var clientList = dataGenerators.GetClientList(10);
-            var firstClient = clientList.First();
+            var clientsGuid = new List<Guid>();
 
             // Assert
             foreach (var client in clientList)
             {
-                clientService.AddClient(client);
+                clientsGuid.Add(clientService.AddClient(client));
             }
             
-            var accountsGuid = clientService.GetAccounts(firstClient.Id);
+            var accountsGuid = clientService.GetAccounts(clientsGuid[0]);
             
-            clientService.DelAccount(accountsGuid.First().Id);
+            clientService.DeleteAccount(accountsGuid[0]);
             
             // Act
             Assert.True(true);
