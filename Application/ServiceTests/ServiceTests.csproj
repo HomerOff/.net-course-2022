@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ExportTool\ExportTool.csproj" />
       <ProjectReference Include="..\Services.Db\Services.Db.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
