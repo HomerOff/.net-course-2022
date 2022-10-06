@@ -16,7 +16,7 @@ public class ExportService
         _csvFileName = csvFileName;
     }
     
-    public void WriteClientToCsv(List<Client> clients)
+    public void WriteClientsToCsv(List<Client> clients)
     {
         var dirInfo = new DirectoryInfo(_pathToDirecory);
         if (!dirInfo.Exists)
@@ -24,7 +24,7 @@ public class ExportService
             dirInfo.Create();
         }
 
-        var fullPath = GetFullPathToFile(_pathToDirecory, _csvFileName);
+        var fullPath = Path.Combine(_pathToDirecory, _csvFileName);
 
         using var fileStream = new FileStream(fullPath, FileMode.OpenOrCreate);
         using var streamWriter = new StreamWriter(fileStream);
@@ -46,7 +46,7 @@ public class ExportService
             Delimiter = ";",
         };
         
-        var fullPath = GetFullPathToFile(_pathToDirecory, _csvFileName);
+        var fullPath = Path.Combine(_pathToDirecory, _csvFileName);
         using var fileStream = new FileStream(fullPath, FileMode.OpenOrCreate);
         using var streamReader = new StreamReader(fileStream);
         using var reader = new CsvReader(streamReader, config);
@@ -67,10 +67,5 @@ public class ExportService
         }
         
         return clients;
-    }
-    
-    private string GetFullPathToFile(string pathToFile, string fileName)
-    {
-        return Path.Combine(pathToFile, fileName);
     }
 }
