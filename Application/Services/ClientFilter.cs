@@ -8,4 +8,5 @@ public class ClientFilter
     public DateTime DateStart { get; set; }
     public DateTime DateEnd { get; set; }
     public int PhoneNumber { get; set; }
+    public int Bonus { get; set; }
 }

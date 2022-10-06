@@ -13,7 +13,7 @@ public class TestDataGenerator
             .CustomInstantiator(f => new Client())
             .RuleFor(c => c.FirstName, f => f.Name.FirstName(f.PickRandom<Name.Gender>()))
             .RuleFor(c => c.LastName, f => f.Name.LastName(f.PickRandom<Name.Gender>()))
-            .RuleFor(c => c.BirthdayDate, f => f.Date.Past(100))
+            .RuleFor(c => c.BirthdayDate, f => f.Date.Past(100).ToUniversalTime())
             .RuleFor(c => c.Passport, f => int.Parse(f.Random.ReplaceNumbers("#######")))
             .RuleFor(c => c.PhoneNumber, f => int.Parse(f.Random.ReplaceNumbers("7#######")));
         var genClient = randClinet.Generate(count);
@@ -31,7 +31,7 @@ public class TestDataGenerator
             .CustomInstantiator(f => new Employee())
             .RuleFor(e => e.FirstName, f => f.Name.FirstName(f.PickRandom<Name.Gender>()))
             .RuleFor(e => e.LastName, f => f.Name.LastName(f.PickRandom<Name.Gender>()))
-            .RuleFor(e => e.BirthdayDate, f => f.Date.Past(100))
+            .RuleFor(e => e.BirthdayDate, f => f.Date.Past(100).ToUniversalTime())
             .RuleFor(e => e.Passport, f => int.Parse(f.Random.ReplaceNumbers("#######")))
             .RuleFor(e => e.PhoneNumber, f => int.Parse(f.Random.ReplaceNumbers("7#######")))
             .RuleFor(e => e.Salary, f => f.Random.Int(1000, 20000));

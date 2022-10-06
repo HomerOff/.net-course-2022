@@ -9,4 +9,5 @@ public class EmployeeFilter
     public DateTime DateEnd { get; set; }
     public int PhoneNumber { get; set; }
     public int Salary { get; set; } 
+    public int Bonus { get; set; }
 }
